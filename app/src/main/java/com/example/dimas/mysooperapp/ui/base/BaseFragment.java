@@ -5,7 +5,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +14,15 @@ import com.example.dimas.mysooperapp.R;
 import com.example.dimas.mysooperapp.ui.utils.AppUtils;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public abstract class BaseFragment extends Fragment {
 
     @Nullable
-    @BindView(R.id.main_progress_bar)
-    View progressBar;
+    @BindView(R.id.main_progress_bar) View progressBar;
 
+    private Unbinder unbinder;
     private Toast testToast;
 
     @Override
@@ -33,8 +34,17 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        Log.d("DEBUG", "DEBUG 15356454");
-        return inflater.inflate(AppUtils.getLayoutId(this), container, false);
+        final View view = inflater.inflate(AppUtils.getLayoutId(this), container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     protected Integer getHeaderTitleId() {
